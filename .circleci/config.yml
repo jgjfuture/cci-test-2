@@ -19,6 +19,8 @@ commands:
     steps:
       - run:
           command: |
+            sudo apt-get update
+            sudo apt install -y netcat
             for i in `seq 1 60`;
             do
               nc -z 127.0.0.1 7000 && echo "Success starting redis" && exit 0
