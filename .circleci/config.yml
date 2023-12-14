@@ -1,0 +1,44 @@
+version: 2.1
+
+executors:
+  test-executor:
+    docker:
+      - image: cimg/go:1.21
+      - image: grokzen/redis-cluster:7.0.10
+
+commands:
+  setup:
+    description: "Setup project"
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+  wait-dependencies:
+    description: "Wait start dependencies"
+    steps:
+      - run:
+          command: |
+            for i in `seq 1 60`;
+            do
+              nc -z 127.0.0.1 7000 && echo "Success starting redis" && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo "Failed start redis Container"
+            exit 1
+
+jobs:
+  test:
+    executor: test-executor
+    steps:
+      - setup
+      - wait-dependencies
+      - run:
+          name: "echo"
+          command: echo success
+
+workflows:
+  main:
+    jobs:
+      - test
