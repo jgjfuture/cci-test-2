@@ -23,7 +23,7 @@ commands:
             sudo apt install -y netcat
             for i in `seq 1 60`;
             do
-              nc -z 127.0.0.1 6999 && echo "Success starting redis" && exit 0
+              nc -z 127.0.0.1 7005 && echo "Success starting redis" && exit 0
               echo -n .
               sleep 1
             done
